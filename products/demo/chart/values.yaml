@@ -1,0 +1,102 @@
+namespace: demo
+
+services:
+  - name: foo
+    image: hashicorp/http-echo:latest
+    replicas: 1
+    port: 5678
+    response: '{"data": "foo"}'
+  - name: bar
+    image: hashicorp/http-echo:latest
+    replicas: 1
+    port: 5678
+    response: '{"data": "bar"}'
+  # Test rapport
+  - name: test-rapport
+    image: hashicorp/http-echo:latest
+    replicas: 1
+    port: 5678
+    response: '{"data": "Here is your api-request test data"}'
+
+mergedata:
+  image: python:3.12-alpine
+  replicas: 1
+  port: 8080
+  fooUrl: "http://foo.demo.svc.cluster.local"
+  barUrl: "http://bar.demo.svc.cluster.local"
+
+serverlessServices:
+  - name: serverless-data
+    image: python:3.12-alpine
+    port: 8080
+    fooUrl: "http://foo.demo.svc.cluster.local"
+    barUrl: "http://bar.demo.svc.cluster.local"
+  - name: serverless-test
+    image: hashicorp/http-echo:latest
+    port: 5678
+    response: '{"data": "serverless test data"}'
+
+gateway:
+  name: apisix-gateway
+  namespace: apisix
+
+routes:
+  - path: /foo
+    hostname: api.local
+    service:
+      name: foo
+      namespace: demo
+      port: 80
+    plugins:
+      - oidc-auth-full
+      - rate-limit
+  - path: /bar
+    hostname: api.local
+    service:
+      name: bar
+      namespace: demo
+      port: 80
+  # Test rapport
+  - path: /test
+    hostname: api.local
+    service:
+      name: test-rapport
+      namespace: demo
+      port: 80
+  - path: /foobar
+    hostname: api.local
+    service:
+      name: mergedata
+      namespace: demo
+      port: 80
+    plugins:
+      - oidc-auth-full
+      - rate-limit
+
+  - path: /serverless-data
+    hostname: api.local
+    service:
+      name: serverless-data
+      namespace: demo
+      port: 80
+    plugins:
+      - oidc-auth
+      - rate-limit
+      - serverless-data-host-rewrite
+  # Test rapport
+  - path: /serverless-test
+    hostname: api.local
+    service:
+      name: serverless-test
+      namespace: demo
+      port: 80
+    plugins:
+      - oidc-auth
+      - rate-limit
+      - serverless-test-host-rewrite
+    
+plugins:
+  - oidc-auth
+  - rate-limit
+
+

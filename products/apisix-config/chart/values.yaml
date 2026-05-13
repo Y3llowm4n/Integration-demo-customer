@@ -1,0 +1,36 @@
+gateway:
+  namespace: apisix
+  name: apisix-gateway
+  tls:
+    secretName: demo-tls
+
+gatewayclass:
+  name: apisix
+
+
+oidc:
+  clientId: apisix
+  clientSecret: apisix-secret
+  realm: demo
+  keycloakUrl: "http://192.168.100.203/auth/realms/demo/.well-known/openid-configuration"
+
+rateLimit:
+  count: 10
+  timeWindow: 60
+
+serverless:
+  services:
+    - name: serverless-data-host-rewrite
+      host: serverless-data.demo.knative.local
+    - name: serverless-test-host-rewrite
+      host: serverless-test.demo.knative.local
+
+certificate:
+  name: demo-tls
+  namespace: apisix
+  secretName: demo-tls
+  issuerName: selfsigned
+  commonName: api.local
+  dnsNames:
+    - api.local
+    - serverless-data.demo.knative.local

@@ -1,0 +1,37 @@
+{{- range .Values.serverlessServices }}
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  template:
+    spec:
+      containers:
+        - name: {{ .name }}
+          image: {{ .image }}
+          {{- if .response }}
+          args:
+            - '-text={{ .response }}'
+            - -listen=:{{ .port }}
+          {{- else }}
+          command: ["python", "/app/app.py"]
+          env:
+            - name: FOO_URL
+              value: {{ .fooUrl }}
+            - name: BAR_URL
+              value: {{ .barUrl }}
+          volumeMounts:
+            - name: serverless-vol
+              mountPath: /app
+          {{- end }}
+          ports:
+            - containerPort: {{ .port }}
+      {{- if not .response }}
+      volumes:
+        - name: serverless-vol
+          configMap:
+            name: app-script
+      {{- end }}
+---
+{{- end }}

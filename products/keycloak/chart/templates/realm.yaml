@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.platform.realm.configMapName }}
+  namespace: {{ .Release.Namespace }}
+data:
+  demo-realm.json: |
+    {
+      "realm": "{{ .Values.platform.realm.name }}",
+      "enabled": true,
+      "clients": [
+        {
+          "clientId": "{{ .Values.platform.oidc.clientId }}",
+          "enabled": true,
+          "publicClient": false,
+          "redirectUris": {{ .Values.platform.oidc.redirectUris | toJson }},
+          "secret": "{{ .Values.platform.oidc.clientSecret }}",
+          "directAccessGrantsEnabled": true,
+          "protocolMappers": [
+            {
+              "name": "api-access-mapper",
+              "protocol": "openid-connect",
+              "protocolMapper": "oidc-usermodel-attribute-mapper",
+              "consentRequired": false,
+              "config": {
+                "claim.name": "api_access",
+                "jsonType.label": "String",
+                "user.attribute": "api_access",
+                "userinfo.token.claim": "true",
+                "id.token.claim": "true",
+                "access.token.claim": "true"
+              }
+            }
+          ]
+        }
+      ],
+      "users": [
+        {
+          "username": "{{ .Values.platform.testUser.username }}",
+          "enabled": true,
+          "email": "{{ .Values.platform.testUser.email }}",
+          "firstName": "Test",
+          "lastName": "User",
+          "emailVerified": true,
+          "requiredActions": [],
+          "attributes": {
+            "api_access": ["full"]
+          },
+          "credentials": [
+            {
+              "type": "password",
+              "value": "{{ .Values.platform.testUser.password }}",
+              "temporary": false
+            }
+          ]
+        },
+        {
+          "username": "{{ .Values.platform.limitedUser.username }}",
+          "enabled": true,
+          "email": "{{ .Values.platform.limitedUser.email }}",
+          "firstName": "Limited",
+          "lastName": "User",
+          "emailVerified": true,
+          "requiredActions": [],
+          "credentials": [
+            {
+              "type": "password",
+              "value": "{{ .Values.platform.limitedUser.password }}",
+              "temporary": false
+            }
+          ]
+        }
+      ]
+    }

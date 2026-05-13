@@ -1,0 +1,13 @@
+{{- range .Values.serverless.services }}
+---
+apiVersion: apisix.apache.org/v1alpha1
+kind: PluginConfig
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.gateway.namespace }}
+spec:
+  plugins:
+    - name: proxy-rewrite
+      config:
+        host: {{ .host }}
+{{- end }}

@@ -1,0 +1,17 @@
+apiVersion: apisix.apache.org/v1alpha1
+kind: PluginConfig
+metadata:
+  name: rate-limit
+  namespace: {{ .Values.gateway.namespace }}
+spec:
+  plugins:
+    - name: limit-count
+      config:
+        count: {{ .Values.rateLimit.count }}
+        time_window: {{ .Values.rateLimit.timeWindow }}
+        key: remote_addr
+        key_type: var
+        policy: local
+        rejected_code: 429
+        rejected_msg: Too many requests
+        show_limit_quota_header: true

@@ -1,0 +1,83 @@
+{{- range .Values.services }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  replicas: {{ .replicas }}
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      containers:
+      - name: {{ .name }}
+        image: {{ .image }}
+        args:
+          - '-text={{ .response }}'
+          - -listen=:{{ .port }}
+        ports:
+        - containerPort: {{ .port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  selector:
+    app: {{ .name }}
+  ports:
+    - port: 80
+      targetPort: {{ .port }}
+---
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mergedata
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.mergedata.replicas }}
+  selector:
+    matchLabels:
+      app: mergedata
+  template:
+    metadata:
+      labels:
+        app: mergedata
+    spec:
+      containers:
+      - name: mergedata
+        image: {{ .Values.mergedata.image }}
+        command: ["python","/app/app.py"]
+        env:
+        - name: FOO_URL
+          value: {{ .Values.mergedata.fooUrl }}
+        - name: BAR_URL
+          value: {{ .Values.mergedata.barUrl }}
+        ports:
+        - containerPort: {{ .Values.mergedata.port }}
+        volumeMounts:
+          - name: python-vol
+            mountPath: /app
+      volumes:
+        - name: python-vol
+          configMap:
+            name: app-script
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mergedata
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: mergedata
+  ports:
+    - port: 80
+      targetPort: {{ .Values.mergedata.port }}

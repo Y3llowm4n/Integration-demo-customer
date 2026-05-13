@@ -1,0 +1,46 @@
+keycloakx:  
+  args:
+    - start-dev
+    - --import-realm
+    
+  extraEnv: |
+    - name: KC_BOOTSTRAP_ADMIN_USERNAME
+      value: "admin"
+    - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: keycloak-credentials
+          key: admin-password
+
+  extraVolumeMounts: |
+    - name: realm-config
+      mountPath: /opt/keycloak/data/import
+
+  extraVolumes: |
+    - name: realm-config
+      configMap:
+        name: keycloak-realm
+
+  service:
+    type: LoadBalancer
+    httpPort: 80
+
+platform:
+  realm:
+    name: demo
+    configMapName: keycloak-realm
+  oidc:
+    clientId: apisix
+    clientSecret: apisix-secret
+    redirectUris:
+      - "https://api.local/*"
+      - "https://serverless-data.demo.knative.local/*"
+  testUser:
+    username: testuser
+    email: testuser@demo.local
+    password: testpass
+  limitedUser:
+    username: limited-user
+    email: limited@demo.local
+    password: limitedpass
+
