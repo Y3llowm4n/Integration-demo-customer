@@ -10,7 +10,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: default
+  project: integration-customer
   source:
     repoURL: https://github.com/Y3llowm4n/Integration-demo-customer
     targetRevision: main
