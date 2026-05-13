@@ -34,3 +34,5 @@ certificate:
   dnsNames:
     - api.local
     - serverless-data.demo.knative.local
+  issuer:
+    name: selfsigned
