@@ -23,18 +23,6 @@ spec:
         ports:
         - containerPort: {{ .port }}
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .name }}
-  namespace: {{ $.Values.namespace }}
-spec:
-  selector:
-    app: {{ .name }}
-  ports:
-    - port: 80
-      targetPort: {{ .port }}
----
 {{- end }}
 apiVersion: apps/v1
 kind: Deployment
@@ -69,15 +57,4 @@ spec:
         - name: python-vol
           configMap:
             name: app-script
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mergedata
-  namespace: {{ .Values.namespace }}
-spec:
-  selector:
-    app: mergedata
-  ports:
-    - port: 80
-      targetPort: {{ .Values.mergedata.port }}
+

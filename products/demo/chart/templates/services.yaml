@@ -1,0 +1,25 @@
+# Non-serverless multi-endpoint service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mergedata
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: mergedata
+  ports:
+    - port: 80
+      targetPort: {{ .Values.mergedata.port }}
+---
+# Non-serverless single-endpoint services
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  selector:
+    app: {{ .name }}
+  ports:
+    - port: 80
+      targetPort: {{ .port }}
