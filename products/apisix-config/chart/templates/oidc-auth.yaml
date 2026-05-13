@@ -5,11 +5,10 @@ metadata:
   namespace: {{ .Values.gateway.namespace }}
 spec:
   plugins:
-    - name: openid-connect
+    - name: authz-keycloak
       config:
+        token_endpoint: {{ .Values.oidc.tokenEndpoint }}
         client_id: {{ .Values.oidc.clientId }}
         client_secret: {{ .Values.oidc.clientSecret }}
-        discovery: {{ .Values.oidc.keycloakUrl }}
-        scope: openid
-        bearer_only: true
-        realm: {{ .Values.oidc.realm }}
+        grant_type: "urn:ietf:params:oauth:grant-type:uma-ticket"
+        access_denied_status: 403

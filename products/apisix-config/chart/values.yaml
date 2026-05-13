@@ -8,11 +8,14 @@ gatewayclass:
   name: apisix
 
 
+
 oidc:
   clientId: apisix
   clientSecret: apisix-secret
   realm: demo
   keycloakUrl: "http://192.168.100.203/auth/realms/demo/.well-known/openid-configuration"
+  tokenEndpoint: "http://192.168.100.203/auth/realms/demo/protocol/openid-connect/token"
+
 
 rateLimit:
   count: 10
@@ -34,5 +37,3 @@ certificate:
   dnsNames:
     - api.local
     - serverless-data.demo.knative.local
-  issuer:
-    name: selfsigned
