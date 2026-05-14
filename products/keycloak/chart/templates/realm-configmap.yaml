@@ -8,6 +8,14 @@ data:
     {
       "realm": "{{ .Values.platform.realm.name }}",
       "enabled": true,
+      "roles": {
+        "realm": [
+          {
+            "name": "api-full",
+            "description": "Full API access"
+          }
+        ]
+      },
       "clients": [
         {
           "clientId": "{{ .Values.platform.oidc.clientId }}",
@@ -16,22 +24,42 @@ data:
           "redirectUris": {{ .Values.platform.oidc.redirectUris | toJson }},
           "secret": "{{ .Values.platform.oidc.clientSecret }}",
           "directAccessGrantsEnabled": true,
-          "protocolMappers": [
-            {
-              "name": "api-access-mapper",
-              "protocol": "openid-connect",
-              "protocolMapper": "oidc-usermodel-attribute-mapper",
-              "consentRequired": false,
-              "config": {
-                "claim.name": "api_access",
-                "jsonType.label": "String",
-                "user.attribute": "api_access",
-                "userinfo.token.claim": "true",
-                "id.token.claim": "true",
-                "access.token.claim": "true"
+          "serviceAccountsEnabled": true,
+          "authorizationServicesEnabled": true,
+          "authorizationSettings": {
+            "allowRemoteResourceManagement": false,
+            "policyEnforcementMode": "ENFORCING",
+            "decisionStrategy": "UNANIMOUS",
+            "resources": [
+              {
+                "name": "full-access-api",
+                "displayName": "Full Access API",
+                "ownerManagedAccess": false,
+                "uris": []
               }
-            }
-          ]
+            ],
+            "policies": [
+              {
+                "name": "api-full-role-policy",
+                "type": "role",
+                "logic": "POSITIVE",
+                "decisionStrategy": "UNANIMOUS",
+                "config": {
+                  "roles": "[{\"id\":\"api-full\",\"required\":false}]"
+                }
+              }
+            ],
+            "permissions": [
+              {
+                "name": "full-access-permission",
+                "type": "resource",
+                "logic": "POSITIVE",
+                "decisionStrategy": "UNANIMOUS",
+                "resources": ["full-access-api"],
+                "policies": ["api-full-role-policy"]
+              }
+            ]
+          }
         }
       ],
       "users": [
@@ -43,9 +71,7 @@ data:
           "lastName": "User",
           "emailVerified": true,
           "requiredActions": [],
-          "attributes": {
-            "api_access": ["full"]
-          },
+          "realmRoles": ["api-full"],
           "credentials": [
             {
               "type": "password",
