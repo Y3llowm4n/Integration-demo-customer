@@ -47,16 +47,16 @@ data:
                 "config": {
                   "roles": "[{\"id\":\"api-full\",\"required\":false}]"
                 }
-              }
-            ],
-            "permissions": [
+              },
               {
                 "name": "full-access-permission",
                 "type": "resource",
                 "logic": "POSITIVE",
                 "decisionStrategy": "UNANIMOUS",
-                "resources": ["full-access-api"],
-                "policies": ["api-full-role-policy"]
+                "config": {
+                  "resources": "[\"full-access-api\"]",
+                  "applyPolicies": "[\"api-full-role-policy\"]"
+                }
               }
             ]
           }
