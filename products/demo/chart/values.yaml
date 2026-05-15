@@ -74,6 +74,8 @@ routes:
       name: orders
       namespace: demo
       port: 80
+    plugins:
+      - oidc-auth
   - path: /foobar
     hostname: api.local
     service:
