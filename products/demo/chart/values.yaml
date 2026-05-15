@@ -68,6 +68,12 @@ routes:
       name: test-rapport
       namespace: demo
       port: 80
+  - path: /orders
+    hostname: api.local
+    service:
+      name: orders
+      namespace: demo
+      port: 80
   - path: /foobar
     hostname: api.local
     service:
