@@ -7,7 +7,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
 spec:
   sources:
-    - name: merge-data
+    - name: merge-data.yaml
       language: yaml
       content: |
         - from:
@@ -58,7 +58,7 @@ spec:
     knative-service:
       enabled: true
   sources:
-    - name: serverless-data
+    - name: serverless-data.yaml
       language: yaml
       content: |
         - from:
