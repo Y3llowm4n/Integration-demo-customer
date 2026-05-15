@@ -35,10 +35,10 @@ serverlessServices:
     image: hashicorp/http-echo:latest
     port: 5678
     response: '{"data": "serverless test data"}'
-  - name: serverless-orders
-    image: hashicorp/http-echo:latest
-    port: 5678
-    response: '{"data": "serverless orders"}'
+  # - name: serverless-orders
+  #   image: hashicorp/http-echo:latest
+  #   port: 5678
+  #   response: '{"data": "serverless orders"}'
 
 gateway:
   name: apisix-gateway
@@ -97,16 +97,16 @@ routes:
       - oidc-auth
       - rate-limit
       - serverless-test-host-rewrite
-  - path: /serverless-orders
-    hostname: api.local
-    service:
-      name: serverless-orders
-      namespace: demo
-      port: 80
-    plugins:
-      - oidc-auth
-      - rate-limit
-      - serverless-orders-host-rewrite
+  # - path: /serverless-orders
+  #   hostname: api.local
+  #   service:
+  #     name: serverless-orders
+  #     namespace: demo
+  #     port: 80
+  #   plugins:
+  #     - oidc-auth
+  #     - rate-limit
+  #     - serverless-orders-host-rewrite
 plugins:
   - oidc-auth
   - rate-limit
