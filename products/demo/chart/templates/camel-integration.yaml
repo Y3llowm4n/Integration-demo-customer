@@ -10,9 +10,8 @@ spec:
     - name: merge-data.yaml
       language: yaml
       content: |
-        - route:
-            from:
-              uri: "platform-http:/foobar"
+        - from:
+            uri: "platform-http:/foobar"
             steps:
               - setBody:
                   expression:
