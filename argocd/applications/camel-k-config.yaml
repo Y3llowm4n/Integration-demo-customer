@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: camel-k-config
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  labels:
+    type: customer
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: integration-customer
+  source:
+    repoURL: https://github.com/Y3llowm4n/Integration-demo-customer
+    targetRevision: main
+    path: products/camel-k-config/chart
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: camel-k
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true

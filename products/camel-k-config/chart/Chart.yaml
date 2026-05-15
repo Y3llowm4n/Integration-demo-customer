@@ -1,0 +1,4 @@
+apiVersion: v2
+name: camel-k-config
+version: 0.1.0
+description: Customer Camel K integration platform configuration

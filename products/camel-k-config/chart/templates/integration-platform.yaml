@@ -1,0 +1,12 @@
+apiVersion: camel.apache.org/v1
+kind: IntegrationPlatform
+metadata:
+  name: camel-k
+  namespace: camel-k
+spec:
+  cluster: Kubernetes
+  build:
+    registry:
+      address: docker.io
+      organization: mikegdevops
+      secret: dockerhub-push-secret

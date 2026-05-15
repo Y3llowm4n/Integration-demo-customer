@@ -1,0 +1,2 @@
+# Customer Camel K platform configuration
+# Registry credentials are managed via SealedSecret
