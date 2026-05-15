@@ -34,7 +34,7 @@ metadata:
 spec:
   traits:
     knative-service:
-      enabled: true
+      enabled: false
   sources:
     - name: serverless-data.yaml
       language: yaml
