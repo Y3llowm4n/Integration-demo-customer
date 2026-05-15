@@ -40,7 +40,7 @@ spec:
       language: yaml
       content: |
         - from:
-            uri: "platform-http:/"
+            uri: "platform-http:/serverless-data"
             steps:
               - setBody:
                   expression:
