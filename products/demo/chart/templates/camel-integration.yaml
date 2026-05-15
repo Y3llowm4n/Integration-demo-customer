@@ -13,86 +13,61 @@ spec:
         - from:
             uri: "platform-http:/foobar"
           steps:
-            - removeHeaders:
-                pattern: "CamelHttp*"
-            - setHeader:
-                name: CamelHttpMethod
-                expression:
-                  constant: GET
-            - to:
-                uri: "http://foo.{{ .Values.namespace }}.svc.cluster.local?bridgeEndpoint=true"
-            - setProperty:
-                name: fooResponse
-                expression:
-                  simple: "${body}"
-            - removeHeaders:
-                pattern: "CamelHttp*"
-            - setHeader:
-                name: CamelHttpMethod
-                expression:
-                  constant: GET
-            - to:
-                uri: "http://bar.{{ .Values.namespace }}.svc.cluster.local?bridgeEndpoint=true"
-            - setProperty:
-                name: barResponse
-                expression:
-                  simple: "${body}"
             - setBody:
                 expression:
-                  simple: >
-                    {"foo":${exchangeProperty.fooResponse},"bar":${exchangeProperty.barResponse}}
+                  constant: '{"status":"camel-k is working"}'
             - setHeader:
                 name: Content-Type
                 expression:
                   constant: "application/json"
 ---
-apiVersion: camel.apache.org/v1
-kind: Integration
-metadata:
-  name: serverless-data
-  namespace: {{ .Values.namespace }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
-spec:
-  traits:
-    knative-service:
-      enabled: true
-  sources:
-    - name: serverless-data.yaml
-      language: yaml
-      content: |
-        - from:
-            uri: "platform-http:/"
-          steps:
-            - removeHeaders:
-                pattern: "CamelHttp*"
-            - setHeader:
-                name: CamelHttpMethod
-                expression:
-                  constant: GET
-            - to:
-                uri: "http://foo.{{ .Values.namespace }}.svc.cluster.local?bridgeEndpoint=true"
-            - setProperty:
-                name: fooResponse
-                expression:
-                  simple: "${body}"
-            - removeHeaders:
-                pattern: "CamelHttp*"
-            - setHeader:
-                name: CamelHttpMethod
-                expression:
-                  constant: GET
-            - to:
-                uri: "http://bar.{{ .Values.namespace }}.svc.cluster.local?bridgeEndpoint=true"
-            - setProperty:
-                name: barResponse
-                expression:
-                  simple: "${body}"
-            - setBody:
-                expression:
-                  simple: >
-                    {"foo":${exchangeProperty.fooResponse},"bar":${exchangeProperty.barResponse}}
-            - setHeader:
-                name: Content-Type
-                expression:
-                  constant: "application/json"
+# apiVersion: camel.apache.org/v1
+# kind: Integration
+# metadata:
+#   name: serverless-data
+#   namespace: {{ .Values.namespace }}
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "0"
+# spec:
+#   traits:
+#     knative-service:
+#       enabled: true
+#   sources:
+#     - name: serverless-data.yaml
+#       language: yaml
+#       content: |
+#         - from:
+#             uri: "platform-http:/"
+#           steps:
+#             - removeHeaders:
+#                 pattern: "CamelHttp*"
+#             - setHeader:
+#                 name: CamelHttpMethod
+#                 expression:
+#                   constant: GET
+#             - to:
+#                 uri: "http://foo.{{ .Values.namespace }}.svc.cluster.local?bridgeEndpoint=true"
+#             - setProperty:
+#                 name: fooResponse
+#                 expression:
+#                   simple: "${body}"
+#             - removeHeaders:
+#                 pattern: "CamelHttp*"
+#             - setHeader:
+#                 name: CamelHttpMethod
+#                 expression:
+#                   constant: GET
+#             - to:
+#                 uri: "http://bar.{{ .Values.namespace }}.svc.cluster.local?bridgeEndpoint=true"
+#             - setProperty:
+#                 name: barResponse
+#                 expression:
+#                   simple: "${body}"
+#             - setBody:
+#                 expression:
+#                   simple: >
+#                     {"foo":${exchangeProperty.fooResponse},"bar":${exchangeProperty.barResponse}}
+#             - setHeader:
+#                 name: Content-Type
+#                 expression:
+#                   constant: "application/json"
