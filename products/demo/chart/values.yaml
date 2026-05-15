@@ -17,11 +17,6 @@ services:
     replicas: 1
     port: 5678
     response: '{"data": "Here is your api-request test data"}'
-  - name: orders
-    image: hashicorp/http-echo:latest
-    replicas: 1
-    port: 5678
-    response: '{"data": "orders service"}'
 
 mergedata:
   image: python:3.12-alpine
@@ -40,6 +35,10 @@ serverlessServices:
     image: hashicorp/http-echo:latest
     port: 5678
     response: '{"data": "serverless test data"}'
+  - name: serverless-orders
+    image: hashicorp/http-echo:latest
+    port: 5678
+    response: '{"data": "serverless orders"}'
 
 gateway:
   name: apisix-gateway
@@ -68,15 +67,6 @@ routes:
       name: test-rapport
       namespace: demo
       port: 80
-  - path: /orders
-    hostname: api.local
-    service:
-      name: orders
-      namespace: demo
-      port: 80
-    plugins:
-      - oidc-auth-full
-      - rate-limit
   - path: /foobar
     hostname: api.local
     service:
@@ -86,7 +76,6 @@ routes:
     plugins:
       - oidc-auth-full
       - rate-limit
-
   - path: /serverless-data
     hostname: api.local
     service:
@@ -108,7 +97,16 @@ routes:
       - oidc-auth
       - rate-limit
       - serverless-test-host-rewrite
-    
+  - path: /serverless-orders
+    hostname: api.local
+    service:
+      name: serverless-orders
+      namespace: demo
+      port: 80
+    plugins:
+      - oidc-auth
+      - rate-limit
+      - serverless-orders-host-rewrite
 plugins:
   - oidc-auth
   - rate-limit

@@ -24,6 +24,8 @@ serverless:
       host: serverless-data.demo.knative.local
     - name: serverless-test-host-rewrite
       host: serverless-test.demo.knative.local
+    - name: serverless-orders-host-rewrite
+      host: serverless-orders.demo.knative.local
 
 certificate:
   name: demo-tls
@@ -34,3 +36,5 @@ certificate:
   dnsNames:
     - api.local
     - serverless-data.demo.knative.local
+    - serverless-test.demo.knative.local
+    - serverless-orders.demo.knative.local
