@@ -6,31 +6,42 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 spec:
-  flows:
-    - route:
-        from:
-          uri: platform-http:/foobar
+  sources:
+    - name: merge-data
+      language: yaml
+      content: |
+        - from:
+            uri: "platform-http:/foobar"
           steps:
-            - remove-headers:
+            - removeHeaders:
                 pattern: "CamelHttp*"
+            - setHeader:
+                name: CamelHttpMethod
+                expression:
+                  constant: GET
             - to:
-                uri: "http://foo.{{ .Values.namespace }}.svc.cluster.local"
-            - set-property:
+                uri: "http://foo.{{ .Values.namespace }}.svc.cluster.local?bridgeEndpoint=true"
+            - setProperty:
                 name: fooResponse
                 expression:
                   simple: "${body}"
-            - remove-headers:
+            - removeHeaders:
                 pattern: "CamelHttp*"
+            - setHeader:
+                name: CamelHttpMethod
+                expression:
+                  constant: GET
             - to:
-                uri: "http://bar.{{ .Values.namespace }}.svc.cluster.local"
-            - set-property:
+                uri: "http://bar.{{ .Values.namespace }}.svc.cluster.local?bridgeEndpoint=true"
+            - setProperty:
                 name: barResponse
                 expression:
                   simple: "${body}"
-            - set-body:
+            - setBody:
                 expression:
-                  simple: '{"foo":${exchangeProperty.fooResponse.trim()},"bar":${exchangeProperty.barResponse.trim()}}'
-            - set-header:
+                  simple: >
+                    {"foo":${exchangeProperty.fooResponse},"bar":${exchangeProperty.barResponse}}
+            - setHeader:
                 name: Content-Type
                 expression:
                   constant: "application/json"
@@ -46,31 +57,42 @@ spec:
   traits:
     knative-service:
       enabled: true
-  flows:
-    - route:
-        from:
-          uri: platform-http:/
+  sources:
+    - name: serverless-data
+      language: yaml
+      content: |
+        - from:
+            uri: "platform-http:/"
           steps:
-            - remove-headers:
+            - removeHeaders:
                 pattern: "CamelHttp*"
+            - setHeader:
+                name: CamelHttpMethod
+                expression:
+                  constant: GET
             - to:
-                uri: "http://foo.{{ .Values.namespace }}.svc.cluster.local"
-            - set-property:
+                uri: "http://foo.{{ .Values.namespace }}.svc.cluster.local?bridgeEndpoint=true"
+            - setProperty:
                 name: fooResponse
                 expression:
                   simple: "${body}"
-            - remove-headers:
+            - removeHeaders:
                 pattern: "CamelHttp*"
+            - setHeader:
+                name: CamelHttpMethod
+                expression:
+                  constant: GET
             - to:
-                uri: "http://bar.{{ .Values.namespace }}.svc.cluster.local"
-            - set-property:
+                uri: "http://bar.{{ .Values.namespace }}.svc.cluster.local?bridgeEndpoint=true"
+            - setProperty:
                 name: barResponse
                 expression:
                   simple: "${body}"
-            - set-body:
+            - setBody:
                 expression:
-                  simple: '{"foo":${exchangeProperty.fooResponse.trim()},"bar":${exchangeProperty.barResponse.trim()}}'
-            - set-header:
+                  simple: >
+                    {"foo":${exchangeProperty.fooResponse},"bar":${exchangeProperty.barResponse}}
+            - setHeader:
                 name: Content-Type
                 expression:
                   constant: "application/json"
