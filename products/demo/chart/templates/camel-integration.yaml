@@ -10,17 +10,18 @@ spec:
     - name: merge-data.yaml
       language: yaml
       content: |
-        - from:
-            uri: "platform-http:/foobar"
-          steps:
-            - setBody:
-                expression:
-                  constant: '{"status":"camel-k is working"}'
-            - setHeader:
-                name: Content-Type
-                expression:
-                  constant: "application/json"
----
+        - route:
+            from:
+              uri: "platform-http:/foobar"
+            steps:
+              - setBody:
+                  expression:
+                    constant: '{"status":"camel-k is working"}'
+              - setHeader:
+                  name: Content-Type
+                  expression:
+                    constant: "application/json"
+# ---
 # apiVersion: camel.apache.org/v1
 # kind: Integration
 # metadata:
