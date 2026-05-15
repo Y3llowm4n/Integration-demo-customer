@@ -5,6 +5,8 @@ kind: Service
 metadata:
   name: {{ .name }}
   namespace: {{ $.Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   selector:
     app: {{ .name }}
@@ -18,6 +20,8 @@ kind: Service
 metadata:
   name: mergedata
   namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   selector:
     app: mergedata
