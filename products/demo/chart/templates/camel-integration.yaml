@@ -7,32 +7,33 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
 spec:
   flows:
-    - from:
-        uri: platform-http:/foobar
-      steps:
-        - remove-headers:
-            pattern: "CamelHttp*"
-        - to:
-            uri: "http://foo.{{ .Values.namespace }}.svc.cluster.local"
-        - set-property:
-            name: fooResponse
-            expression:
-              simple: "${body}"
-        - remove-headers:
-            pattern: "CamelHttp*"
-        - to:
-            uri: "http://bar.{{ .Values.namespace }}.svc.cluster.local"
-        - set-property:
-            name: barResponse
-            expression:
-              simple: "${body}"
-        - set-body:
-            expression:
-              simple: '{"foo":${exchangeProperty.fooResponse.trim()},"bar":${exchangeProperty.barResponse.trim()}}'
-        - set-header:
-            name: Content-Type
-            expression:
-              constant: "application/json"
+    - route:
+        from:
+          uri: platform-http:/foobar
+        steps:
+          - remove-headers:
+              pattern: "CamelHttp*"
+          - to:
+              uri: "http://foo.{{ .Values.namespace }}.svc.cluster.local"
+          - set-property:
+              name: fooResponse
+              expression:
+                simple: "${body}"
+          - remove-headers:
+              pattern: "CamelHttp*"
+          - to:
+              uri: "http://bar.{{ .Values.namespace }}.svc.cluster.local"
+          - set-property:
+              name: barResponse
+              expression:
+                simple: "${body}"
+          - set-body:
+              expression:
+                simple: '{"foo":${exchangeProperty.fooResponse.trim()},"bar":${exchangeProperty.barResponse.trim()}}'
+          - set-header:
+              name: Content-Type
+              expression:
+                constant: "application/json"
 ---
 apiVersion: camel.apache.org/v1
 kind: Integration
@@ -46,29 +47,30 @@ spec:
     knative-service:
       enabled: true
   flows:
-    - from:
-        uri: platform-http:/
-      steps:
-        - remove-headers:
-            pattern: "CamelHttp*"
-        - to:
-            uri: "http://foo.{{ .Values.namespace }}.svc.cluster.local"
-        - set-property:
-            name: fooResponse
-            expression:
-              simple: "${body}"
-        - remove-headers:
-            pattern: "CamelHttp*"
-        - to:
-            uri: "http://bar.{{ .Values.namespace }}.svc.cluster.local"
-        - set-property:
-            name: barResponse
-            expression:
-              simple: "${body}"
-        - set-body:
-            expression:
-              simple: '{"foo":${exchangeProperty.fooResponse.trim()},"bar":${exchangeProperty.barResponse.trim()}}'
-        - set-header:
-            name: Content-Type
-            expression:
-              constant: "application/json"
+    - route:
+        from:
+          uri: platform-http:/
+        steps:
+          - remove-headers:
+              pattern: "CamelHttp*"
+          - to:
+              uri: "http://foo.{{ .Values.namespace }}.svc.cluster.local"
+          - set-property:
+              name: fooResponse
+              expression:
+                simple: "${body}"
+          - remove-headers:
+              pattern: "CamelHttp*"
+          - to:
+              uri: "http://bar.{{ .Values.namespace }}.svc.cluster.local"
+          - set-property:
+              name: barResponse
+              expression:
+                simple: "${body}"
+          - set-body:
+              expression:
+                simple: '{"foo":${exchangeProperty.fooResponse.trim()},"bar":${exchangeProperty.barResponse.trim()}}'
+          - set-header:
+              name: Content-Type
+              expression:
+                constant: "application/json"
