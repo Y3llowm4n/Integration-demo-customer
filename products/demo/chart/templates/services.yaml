@@ -14,17 +14,3 @@ spec:
     - port: 80
       targetPort: {{ .port }}
 {{- end }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mergedata
-  namespace: {{ .Values.namespace }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
-spec:
-  selector:
-    app: mergedata
-  ports:
-    - port: 80
-      targetPort: {{ .Values.mergedata.port }}

@@ -18,13 +18,6 @@ services:
     port: 5678
     response: '{"data": "Here is your api-request test data"}'
 
-mergedata:
-  image: python:3.12-alpine
-  replicas: 1
-  port: 8080
-  fooUrl: "http://foo.demo.svc.cluster.local"
-  barUrl: "http://bar.demo.svc.cluster.local"
-
 serverlessServices:
   - name: serverless-data
     image: python:3.12-alpine
@@ -70,7 +63,7 @@ routes:
   - path: /foobar
     hostname: api.local
     service:
-      name: mergedata
+      name: merge-data
       namespace: demo
       port: 80
     plugins:
