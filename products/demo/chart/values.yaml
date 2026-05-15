@@ -75,7 +75,8 @@ routes:
       namespace: demo
       port: 80
     plugins:
-      - oidc-auth
+      - oidc-auth-full
+      - rate-limit
   - path: /foobar
     hostname: api.local
     service:
