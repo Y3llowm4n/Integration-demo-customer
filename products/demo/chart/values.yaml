@@ -17,6 +17,11 @@ services:
     replicas: 1
     port: 5678
     response: '{"data": "Here is your api-request test data"}'
+  - name: orders
+    image: hashicorp/http-echo:latest
+    replicas: 1
+    port: 5678
+    response: '{"data": "orders service"}'
 
 mergedata:
   image: python:3.12-alpine
